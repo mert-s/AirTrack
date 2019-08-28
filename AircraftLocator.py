@@ -5,11 +5,17 @@ api = OpenSkyApi()
 #print(s)
 #print(math.atan2(-2, -1)) #y, x
 
+
+userLat = input("Enter latitude of your location (e.g. 51.093132): ")
+userLon = input("Enter longitude of your location (e.g. -0.129310): ")
+
+distanceSetting = 0.1 #0.1 = ~11km, 0.01 = ~1km
+
 def get_nearby_planes(userCoordinateX, userCoordinateY):
-    planes = api.get_states(time_secs=0, icao24=None, serials=None, bbox=(51.405366, 51.583197, -0.310200, -0.132724))
+    planes = api.get_states(time_secs=0, icao24=None, serials=None, bbox=(userLat - 0.1, userLat + 0.1, userLon - 0.1, userLon + 0.1))
     for p in planes.states:
         print("Airplane detected: " + p.callsign)
-        print(calcAngle(51.590439, -0.118943, p.latitude, p.longitude))
+        print(calcAngle(userLat, userLon, p.latitude, p.longitude))
     print(planes)
 
     return planes
@@ -40,12 +46,12 @@ def get_planes_near_bearing(bearing):
     planes = get_nearby_planes(0,0)
 
     for p in planes.states:
-        if((abs(int(calcAngle(51.590439, -0.118943, p.latitude, p.longitude)) - bearing)) < 30):
+        if((abs(int(calcAngle(userLat, userLon, p.latitude, p.longitude)) - bearing)) < 30):
             print("Plane detected near bearing " + str(bearing) + ": " + str(p.callsign))
 
 
 #def callsign_to_airline(callsign): 
 
-get_planes_near_bearing(200)
+get_planes_near_bearing(198)
 
 #calcAngle(51.590439, -0.118943, 51.595560, -0.123273)
